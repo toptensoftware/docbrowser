@@ -1,0 +1,604 @@
+/*
+DocBrowser - http://www.toptensoftware.com/docbrowser
+Copyright (C) 2019 Topten Software. All Rights Reserved
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this product except in 
+compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is 
+distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+See the License for the specific language governing permissions and limitations under the License.
+*/
+
+
+// Variables
+@header-height: 50px;
+@footer-height: 35px;
+@footer-inset: 10px;
+@content-padding: 20px;
+@primary-nav-width: 25vw;
+@secondary-nav-width: 180px;
+@max-article-width: 940px;     
+@min-article-width: 555px;     
+
+
+// Box Sizing Reset
+html
+{
+    box-sizing: border-box;
+    height: 100%;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+
+// Fix for fixed headers and #anchor targets scrolling under the header
+:target:before 
+{
+    content:"";
+    display:block;
+    height:@header-height + @content-padding;
+    margin:((@header-height + @content-padding) * -1) 0 0;
+}
+
+body 
+{
+    margin:0;
+    font-family:sans-serif;
+    position: relative;
+    min-height:100%;
+
+    // Header
+    header
+    {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        height: @header-height;
+        z-index: 1;
+        overflow:hidden;
+
+        div.inner
+        {
+            float:left;
+            line-height:@header-height;
+        }
+
+        div.image-section 
+        {
+            float: left;
+            padding: 10px;
+            position: relative;
+            height: 100%;
+        }
+
+        div.image-section img 
+        {
+            width: auto;
+            height: 100%;
+
+        }
+    }
+
+    article
+    {
+        margin-right:@secondary-nav-width + @content-padding;
+    }
+    
+    footer
+    {
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: @footer-height;
+        width: calc(100% - @primary-nav-width - (@footer-inset * 2));
+        margin-left: calc(@primary-nav-width + @footer-inset);
+    }
+}
+
+// Containers
+#body-container
+{
+    padding-top: @header-height;
+    padding-bottom: @footer-height;
+}
+
+#article-container
+{
+    position: relative;
+    margin-left: @primary-nav-width;
+    padding: @content-padding;
+}
+
+#project-icon
+{
+    display: none;
+}
+
+
+// Header links
+#header-links 
+{
+    float:right;
+    margin:0 15px 0 15px;
+    padding-top: (@header-height - 15px) / 2;
+    a
+    {
+        display:inline-block;
+    }
+}
+
+
+// Primary Navigation Panel
+#nav-filter
+{
+    width:calc(100% - 20px);
+}
+
+#nav-tree
+{
+    // Add some space at the bottom so can still see
+    // bottom element even with Chrome's link target popup
+    margin-bottom:40px;
+       
+    & > div > label
+    {
+        margin-top:10px;
+    }
+
+    & > div > label
+    {
+        padding-left:15px;
+    }
+
+    & > div > label > a
+    {
+        padding: 0px 3px 0 0;
+    }
+
+    & > div > ul
+    {
+        margin-left: 0px;
+    }
+}
+
+#nav-primary 
+{
+    height: calc(100vh - @header-height);
+    width: @primary-nav-width;
+    position: fixed;
+    z-index: 1;
+    top: @header-height;
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: scroll; // has to be scroll, not auto
+    -webkit-overflow-scrolling: touch;
+
+    a
+    {
+        display:block;
+        padding: 5px 15px 5px 19px;
+    }
+
+    label
+    {
+        display:block;
+        padding: 6px 15px 6px 19px;
+        position: relative;
+    }
+
+    ul
+    {
+        list-style-type: none;
+        padding:0;
+        margin:0;
+        margin-left:15px;
+        text-indent:0;
+    }
+
+    div.expander 
+    {
+        label
+        {
+            cursor: pointer;
+        }
+
+        &.expanded > ul
+        {
+            display:block;
+        }
+
+        & > ul
+        {
+            display:none;
+        }
+
+        & > label > span.chevron 
+        {
+            pointer-events: none;
+            position: absolute;
+            top:calc(50% - 4px);
+            left:5px;
+            width:10px;
+            height:8px;
+            display:inline-block;
+            text-align: center;
+            transition: .2s ease-in-out;
+            font: normal normal normal 14px/1 dbicons;
+            font-size:8px;
+        }
+
+        &.expanded > label > span.chevron 
+        {
+            transform: rotate(90deg);
+            transition: .2s ease-in-out;
+        }
+
+        & > label > span.chevron::after
+        {
+            content: "\e901";
+        }
+    }
+
+    div.filterActive 
+    {
+        :not(.match)
+        {
+            display:none;
+        }
+
+        a:not(.match),
+        ul.match,
+        div.expander.match > label
+        {
+            display:block;
+        }
+
+        label > span.chevron 
+        {
+            transform: rotate(90deg);
+            transition: .2s ease-in-out;
+        }
+    }
+}
+
+
+
+// Secondary Navigation Panel aka "On This Page"
+
+#nav-secondary
+{
+    width: @secondary-nav-width;
+    position: fixed;
+    z-index: 1;
+    top: @header-height + @content-padding;
+    right: @content-padding;
+
+    a
+    {
+        display:block;
+    }
+}
+
+
+
+// In article heading link anchors
+
+a.anchor-link:hover
+{
+    text-decoration: none;
+}
+
+article h1 a.anchor-link,
+article h2 a.anchor-link,
+article h3 a.anchor-link
+{
+    opacity: 0;
+    transition: .2s ease-in-out;
+}
+
+article h1:hover a.anchor-link,
+article h2:hover a.anchor-link,
+article h3:hover a.anchor-link
+{
+    opacity: 1;
+    transition: .2s ease-in-out;
+}
+
+// Hamburger menu button
+a#show-nav-button
+{
+    display:none;
+    font-size:18px;
+    width:@header-height;
+    height:100%;
+    padding-top:(@header-height - 18px) / 2;
+    text-align: center;
+
+    &:hover
+    {
+        text-decoration:none;
+    }
+}
+
+
+
+
+
+// Icon Font
+
+@font-face 
+{
+    font-family: 'dbicons';
+    src: url('fonts/dbicons.eot');
+    src: url('fonts/dbicons.eot') format('embedded-opentype'),
+         url('fonts/dbicons.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] 
+{
+    font-family: 'dbicons' !important;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-menu:before 
+{
+    content: "\e900";
+}
+.icon-chevron:before 
+{
+    content: "\e901";
+}
+.icon-link:before 
+{
+    content: "\e902";
+}
+
+
+
+// Conditional class
+
+.hidden
+{
+    display:none;
+}
+
+.hidden-in-docbrowser
+{
+    display:none;
+}
+
+.primary-nav-hidden,
+.secondary-nav-hidden,
+body.nonav .primary-nav-shown,
+body.nonav .primary-nav-enabled,
+body:not(.nonav) .primary-nav-disabled
+{
+    display:none;
+}
+
+body.nonav .primary-nav-hidden
+{
+    display:block;
+}
+
+
+// ------------------- Media queries ---------------------
+
+// Responsive grow 1 - limit main content width
+@media screen and (min-width:(@max-article-width + @content-padding * 3 + @secondary-nav-width + 20) / (1-unit(@primary-nav-width)/100))
+{
+    article
+    {
+        margin-right: calc(100% - @max-article-width);
+    }
+}
+
+// Response grow 2 - keep main content centered
+@media screen and (min-width:(@max-article-width + @content-padding * 2 + 20) * 2)
+{
+    article
+    {
+        margin-left: calc((100% - @max-article-width - @primary-nav-width) / 2);
+        margin-right: calc((100% - @max-article-width + @primary-nav-width) / 2);
+    }
+}
+
+// Responsive shrink 1 - remove the secondary nav
+@media screen and (max-width: (@min-article-width + @content-padding * 3 + @secondary-nav-width)  / (1-unit(@primary-nav-width)/100) + 20)
+{
+    body:not(.nonav)
+    {
+         #nav-secondary
+        {
+            display:none;
+        }
+        article
+        {
+            margin-right:0;
+        }
+
+        .secondary-nav-hidden
+        {
+            display:block;
+        }
+
+        .secondary-nav-shown
+        {
+            display:none;
+        }
+    }
+}
+
+// Responsive shrink 2 - remove the primary nav, and put it in a popup button */
+@media screen and (max-width: (@min-article-width + @content-padding * 2) / (1-unit(@primary-nav-width)/100) + 20)
+{
+    body:not(.nonav) 
+    {
+        #project-icon
+        {
+            display: block;
+        }
+        
+        #project-logo
+        {
+            display: none;
+        }
+        
+        #nav-primary
+        {
+            display:none;
+        }
+        #article-container
+        {
+            margin-left:0;
+        }
+
+        a#show-nav-button
+        {
+            display:block;
+            float:left;
+        }
+        
+        &.nav-popup-active 
+        {
+            #nav-primary
+            {
+                display:block;
+                position:fixed;
+                width:100%;
+                height:calc(100% - @header-height);
+                top:@header-height;
+                left:0;
+            }
+
+            article
+            {
+                display:none;
+            }
+
+            a#show-nav-button
+            {
+                background-color: rgb(241, 241, 241);
+                color:black;
+            }
+        }
+
+        footer
+        {
+            left: 0;
+            width: calc(100% - (@footer-inset * 2));
+            margin-left: @footer-inset;
+        }
+
+        .primary-nav-hidden
+        {
+            display:block;
+        }
+
+        .primary-nav-shown
+        {
+            display:none;
+        }
+    }
+}
+
+
+// ------------------- Navigation Tree Disabled --------------------- 
+
+body.nonav 
+{
+    #article-container
+    {
+        margin-left: 0;
+        margin-right: 0;
+    }
+
+    footer
+    {
+        margin-left: @content-padding;
+        margin-right: @content-padding;
+        width: calc(100% - @content-padding * 2);
+    }
+
+    article
+    {
+        max-width: @max-article-width;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #nav-primary
+    {
+        display:none;
+    }
+
+    a#show-nav-button
+    {
+        display:none;
+    }
+}
+
+
+
+// Responsive shrink 1 - remove margin from left
+@media screen and (max-width:@max-article-width + @secondary-nav-width * 2 + @content-padding * 3 + 20)
+{
+    body.nonav 
+    {
+        article
+        {
+            margin-left:auto;
+            max-width: @max-article-width;
+            margin-right:@content-padding + @secondary-nav-width;
+        }
+    }
+}
+
+// Responsive shrink 2 - remove secondary nav 
+@media screen and (max-width:@min-article-width + @secondary-nav-width + @content-padding * 2 + 20)
+{
+    body.nonav 
+    {
+        #project-icon
+        {
+            display: block;
+        }
+        
+        #project-logo
+        {
+            display: none;
+        }
+        
+        article
+        {
+            margin-left:0;
+            margin-right:0;
+        }
+
+        #nav-secondary,
+        .secondary-nav-shown
+        {
+            display:none;
+        }
+
+        .secondary-nav-hidden
+        {
+            display:block;
+        }
+    }
+
+}
+
