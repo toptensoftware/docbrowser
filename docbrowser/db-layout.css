@@ -1,0 +1,560 @@
+/*
+DocBrowser - http://www.toptensoftware.com/docbrowser
+Copyright (C) 2019 Topten Software. All Rights Reserved
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this product except in 
+compliance with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software distributed under the License is 
+distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+See the License for the specific language governing permissions and limitations under the License.
+*/
+
+
+/* Variables */
+:root
+{
+    --max-article-width: 940px;     /* also update media queries below */
+    --min-article-width: 555px;     /* also update media queries below */
+}
+
+
+
+/* Box Sizing Reset */
+html
+{
+    box-sizing: border-box;
+    height: 100%;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
+
+
+
+/* Body Reset */
+body
+{
+    margin:0;
+    font-family:sans-serif;
+    position: relative;
+    min-height:100%;
+}
+
+
+
+/* Fix for fixed headers and #anchor targets scrolling under the header */
+:target:before 
+{
+    content:"";
+    display:block;
+    height:calc(var(--header-height) + var(--content-padding));
+    margin:calc((var(--header-height) + var(--content-padding)) * -1) 0 0;
+}
+
+
+
+/* Containers */
+#body-container
+{
+    padding-top: var(--header-height);
+    padding-bottom: var(--footer-height);
+}
+
+#article-container
+{
+    position: relative;
+    margin-left: var(--primary-nav-width);
+    padding: var(--content-padding);
+}
+
+article
+{
+    margin-right:calc(var(--secondary-nav-width) + var(--content-padding));
+}
+
+
+
+/* Header */
+body header
+{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    height: var(--header-height);
+    z-index: 1;
+    overflow:hidden;
+}
+
+body header div.inner
+{
+    float:left;
+    line-height:var(--header-height);
+}
+
+body header div.image-section 
+{
+    float: left;
+    padding: 10px;
+    position: relative;
+    height: 100%;
+}
+
+body header div.image-section img 
+{
+    width: auto;
+    height: 100%;
+}
+
+#project-icon
+{
+    display: none;
+}
+
+#header-links 
+{
+    float:right;
+    margin:0 15px 0 15px;
+    padding-top: calc((var(--header-height) - 15px) / 2);
+}
+
+#header-links a
+{
+    display:inline-block;
+}
+
+
+
+/* Footer */
+body footer
+{
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: var(--footer-height);
+    width: calc(100% - var(--primary-nav-width) - (var(--footer-inset) * 2));
+    margin-left: calc(var(--primary-nav-width) + var(--footer-inset));
+}
+
+
+
+/* Primary Navigation Panel */
+#nav-filter
+{
+    width:calc(100% - 20px);
+}
+
+#nav-tree
+{
+    /* Add some space at the bottom so can still see
+       bottom element even with Chrome's link target popup */
+    margin-bottom:40px;
+}
+
+#nav-primary
+{
+    height: calc(100vh - var(--header-height));
+    width: var(--primary-nav-width);
+    position: fixed;
+    z-index: 1;
+    top: var(--header-height);
+    left: 0;
+    overflow-x: hidden;
+    overflow-y: scroll; /* has to be scroll, not auto */
+    -webkit-overflow-scrolling: touch;
+}
+
+#nav-primary a
+{
+    display:block;
+    padding: 5px 15px 5px 19px;
+}
+
+#nav-tree > div > label
+{
+    margin-top:10px;
+}
+
+#nav-tree > div > label
+{
+    padding-left:15px;
+}
+
+#nav-tree > div > label > a
+{
+    padding: 0px 3px 0 0;
+}
+
+#nav-tree > div > ul
+{
+    margin-left: 0px;
+}
+
+#nav-primary label
+{
+    display:block;
+    padding: 6px 15px 6px 19px;
+    position: relative;
+}
+
+#nav-primary div.expander label
+{
+    cursor: pointer;
+}
+
+#nav-primary ul
+{
+    list-style-type: none;
+    padding:0;
+    margin:0;
+    margin-left:15px;
+    text-indent:0;
+}
+
+#nav-primary div.expander.expanded > ul
+{
+    display:block;
+}
+
+#nav-primary div.expander > ul
+{
+    display:none;
+}
+
+#nav-primary div.expander > label > span.chevron 
+{
+    pointer-events: none;
+    position: absolute;
+    top:calc(50% - 4px);
+    left:5px;
+    width:10px;
+    height:8px;
+    display:inline-block;
+    text-align: center;
+    transition: .2s ease-in-out;
+    font: normal normal normal 14px/1 dbicons;
+    font-size:8px;
+}
+
+#nav-primary div.expander.expanded > label > span.chevron 
+{
+    transform: rotate(90deg);
+    transition: .2s ease-in-out;
+}
+
+#nav-primary div.expander > label > span.chevron::after
+{
+    content: "\e901";
+}
+
+#nav-primary div.filterActive :not(.match)
+{
+    display:none;
+}
+
+#nav-primary div.filterActive a:not(.match),
+#nav-primary div.filterActive ul.match,
+#nav-primary div.filterActive div.expander.match > label
+{
+    display:block;
+}
+
+#nav-primary div.filterActive label > span.chevron 
+{
+    transform: rotate(90deg);
+    transition: .2s ease-in-out;
+}
+
+
+
+/* Secondary Navigation Panel aka "On This Page */
+
+#nav-secondary
+{
+    width: var(--secondary-nav-width);
+    position: fixed;
+    z-index: 1;
+    top: calc(var(--header-height) + var(--content-padding));
+    right: var(--content-padding);
+}
+
+#nav-secondary a
+{
+    display:block;
+}
+
+
+
+/* In article heading link anchors */
+
+a.anchor-link:hover
+{
+    text-decoration: none;
+}
+
+article h1 a.anchor-link,
+article h2 a.anchor-link,
+article h3 a.anchor-link
+{
+    opacity: 0;
+    transition: .2s ease-in-out;
+}
+
+article h1:hover a.anchor-link,
+article h2:hover a.anchor-link,
+article h3:hover a.anchor-link
+{
+    opacity: 1;
+    transition: .2s ease-in-out;
+}
+
+
+
+/* Hamburger menu button */
+a#show-nav-button
+{
+    display:none;
+    font-size:18px;
+    width:var(--header-height);
+    height:100%;
+    padding-top:calc((var(--header-height) - 18px) / 2);
+    text-align: center;
+}
+
+a#show-nav-button:hover
+{
+    text-decoration:none;
+}
+
+
+
+/* Hidden */
+
+.hidden
+{
+    display:none;
+}
+
+.hidden-in-docbrowser
+{
+    display:none;
+}
+
+
+
+/* Icon Font */
+
+@font-face 
+{
+    font-family: 'dbicons';
+    src: url('fonts/dbicons.eot');
+    src: url('fonts/dbicons.eot') format('embedded-opentype'),
+         url('fonts/dbicons.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] 
+{
+    font-family: 'dbicons' !important;
+    speak: none;
+    font-style: normal;
+    font-weight: normal;
+    font-variant: normal;
+    text-transform: none;
+    line-height: 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-menu:before 
+{
+    content: "\e900";
+}
+.icon-chevron:before 
+{
+    content: "\e901";
+}
+.icon-link:before 
+{
+    content: "\e902";
+}
+
+
+
+/* ------------------- Media queries --------------------- */ 
+
+/* Responsive grow 1 - limit main content width */
+/* Calculate limit as (max-article-width + content-padding * 3 + secondary-nav-width + 20) * 4 / 3 */
+/* where 20 ~= scroll bar width */
+@media screen and (min-width:1600px)
+{
+    article
+    {
+        margin-right: calc(100% - var(--max-article-width));
+    }
+}
+
+/* Response grow 2 - keep main content centered */
+/* Calculate limit as (max-article-width + content-padding * 2 + 20) * 2; */
+/* where 20 ~= scroll bar width */
+@media screen and (min-width:2000px)
+{
+    article
+    {
+        margin-left: calc((100% - var(--max-article-width) - var(--primary-nav-width)) / 2);
+        margin-right: calc((100% - var(--max-article-width) + var(--primary-nav-width)) / 2);
+    }
+}
+
+
+/* Responsive shrink 1 - remove the secondary nav */
+/* Calculate as (min-article-width + content-padding * 3 + secondary-nav-width) * 4 / 3 + 20; */
+/* where 20 ~= scroll bar width */
+@media screen and (max-width: 1080px)
+{
+    body:not(.nonav) #nav-secondary
+    {
+        display:none;
+    }
+    body:not(.nonav) article
+    {
+        margin-right:0;
+    }
+}
+
+/* Responsive shrink 2 - remove the primary nav, and put it in a popup button */
+/* Calculate as (min-article-width + content-padding * 2) * 4 / 3 + 20 */
+/* where 20 ~= scroll bar width */
+@media screen and (max-width: 813px)
+{
+    body:not(.nonav) #project-icon
+    {
+        display: block;
+    }
+    
+    body:not(.nonav) #project-logo
+    {
+        display: none;
+    }
+    
+    body:not(.nonav) #nav-primary
+    {
+        display:none;
+    }
+    body:not(.nonav) #article-container
+    {
+        margin-left:0;
+    }
+
+    body:not(.nonav) a#show-nav-button
+    {
+        display:block;
+        float:left;
+    }
+    
+    body:not(.nonav).nav-popup-active #nav-primary
+    {
+        display:block;
+        position:fixed;
+        width:100%;
+        height:calc(100% - var(--header-height));
+        top:var(--header-height);
+        left:0;
+    }
+
+    body:not(.nonav).nav-popup-active article
+    {
+        display:none;
+    }
+
+    body:not(.nonav).nav-popup-active a#show-nav-button
+    {
+        background-color: rgb(241, 241, 241);
+        color:black;
+    }
+
+    body:not(.nonav) footer
+    {
+        left: 0;
+        width: calc(100% - (var(--footer-inset) * 2));
+        margin-left: var(--footer-inset);
+    }
+}
+
+
+/* ------------------- Navigation Tree Disabled --------------------- */ 
+
+body.nonav #article-container
+{
+    margin-left: 0;
+    margin-right: 0;
+}
+
+body.nonav footer
+{
+    margin-left: var(--content-padding);
+    margin-right: var(--content-padding);
+    width: calc(100% - var(--content-padding) * 2);
+}
+
+body.nonav article
+{
+    max-width: var(--max-article-width);
+    margin-left: auto;
+    margin-right: auto;
+}
+
+body.nonav #nav-primary
+{
+    display:none;
+}
+
+body.nonav a#show-nav-button
+{
+    display:none;
+}
+
+
+
+/* Responsive shrink 1 - remove margin from left */
+/* calc: max-article-width + secondary-nav-width * 2 * content-padding * 3 + 20 */
+@media screen and (max-width:1380px)
+{
+    body.nonav article
+    {
+        margin-left:auto;
+        max-width: var(--max-article-width);
+        margin-right:calc(var(--content-padding) + var(--secondary-nav-width));
+    }
+}
+
+/* Responsive shrink 2 - remove secondary nav */
+/* calc: min-article-width + secondary-nav-width + content-padding * 2 + 20 */
+@media screen and (max-width:795px)
+{
+    body.nonav #project-icon
+    {
+        display: block;
+    }
+    
+    body.nonav #project-logo
+    {
+        display: none;
+    }
+    
+    body.nonav article
+    {
+        margin-left:0;
+        margin-right:0;
+    }
+
+    body.nonav #nav-secondary
+    {
+        display:none;
+    }
+}
+

@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{title}} - DocBrowser</title>
+    <link rel="preload" href="/docbrowser/fonts/dbicons.woff" as="font" crossorigin />
+
+    <link rel="stylesheet" href="/docbrowser/db-layout.css" />
+    <link rel="stylesheet" href="/docbrowser/db-appearance.css" />
+    <script src="/docbrowser/db-script.js"></script>
+
+    <!-- 
+    <link rel="stylesheet" href="/docbrowser/db-combined.min.css" />
+    <script src="/docbrowser/db-script.min.js"></script>
+    -->
+
+    <link rel="stylesheet" href="/db-customize.css" />
+	<meta name="viewport" content="initial-scale=1">
+    
+    <!-- Include other prism below as required -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/themes/prism-okaidia.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.16.0/components/prism-markup.min.js"></script>
+</head>
+<body>
+    <header>
+        <!-- This button appears on narrow screens and shows the nav tree when clicked -->
+        <a id="show-nav-button" href="#"><i class="icon-menu"></i></a>
+
+        <!-- A small icon shown to the left of the main title -->
+        <div class="image-section" id="project-icon">
+            <img src="/chrome_topten_icon.png"/ >
+        </div>
+
+        <!-- A wide icon/logo show to the left of the main title -->
+        <div class="image-section" id="project-logo">
+            <img src="/chrome_topten_horz_light.png"/ >
+        </div>
+
+        <!-- The main heading area -->
+        <div class="inner">
+            <a href="/">DocBrowser</a> <small>v0.1</small>
+        </div>
+
+        <!-- Links shown in the top-right hand corner of the page -->    
+        <div id="header-links">
+            <a href="https://www.toptensoftware.com">Topten Software</a>
+            <a href="https://github.com/toptensoftware">GitHub</a>
+        </div>
+    </header>
+
+    <div id="body-container">
+        
+        <nav id="nav-primary">
+        <div id="nav-content" class="hidden">
+        <input type="search" placeholder="Filter" id="nav-filter" />
+
+        <!--
+        This is the main navigation tree.
+
+        * `data-autoexpanders` causes doc browser to automatically adds 
+            the css "expander" class to all contains nested divs.
+
+        * `data-key` is the key name used for session storage. If your
+            site has multiple docbrowsers, each should have a
+            unique key here.
+        -->
+        <div id="nav-tree" data-autoexpanders data-key="docbrowser">
+
+            <!--
+            This entire section should be replaced with your navigation
+            tree.  Each item in the tree should be either a leaf node 
+            of the format:
+
+                 <li><a>text</a></li>
+
+            or an expandable group of elements of the form
+
+                <div>
+                    <label>Text</label>
+                    <ul>
+                        [[Nest other items here]]
+                    <ul>
+                </div>
+
+            By default, nav tree filtering is done on the text of `<a>` elements
+            in the tree.  You can change the text used for an item's search 
+            text, with a `data-filter-text` attribute
+            --> 
+
+            <div>
+                <label>DocBrowser</label>
+                <ul>
+                    <li><a href="/">Overview</a></li>
+                    <li><a href="/gettingStarted">Getting Started</a></li>
+                    <li><a href="/headers">Headers &amp; Footers</a></li>
+                    <li><a href="/navtree">Navigation Tree</a></li>
+                    <li><a href="/onthispage">"On This Page" Links</a></li>
+                    <li><a href="/article">Article Content</a></li>
+                    <li><a href="/customization">Customization</a></li>
+                    <li><a href="/license">License</a></li>
+                    <li><a href="/fruitsAndCars">Fruits and Cars?</a></li>
+                </ul>
+            </div>
+            <div>
+                <label>Fruits</label>
+                <ul>
+                    <li>
+                        <div>
+                            <label>Fruits</label>
+                            <ul>
+                                <li><a href="/fruits/apple">Apple</a></li>
+                                <li><a href="/fruits/banana">Banana</a></li>
+                                <li><a href="/fruits/orange">Orange</a></li>
+                                <li><a href="/fruits/passionfruit">Passionfruit</a></li>
+                                <li><a href="/fruits/pear">Pear</a></li>
+                                <li><a href="/fruits/pineapple">Pineapple</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <label>Muscle Cars</label>
+                <ul>
+                    <li>
+                        <div>
+                            <label>Cars</label>
+                            <ul>
+                                <li>
+                                    <div>
+                                        <label>Australian</label>
+                                        <ul>
+                                            <li><a href="/cars/charger">Charger</a></li>
+                                            <li><a href="/cars/falcon">Falcon</a></li>
+                                            <li><a href="/cars/monaro">Monaro</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                                <li>
+                                    <div>
+                                        <label>U.S.</label>
+                                        <ul>
+                                            <li><a href="/cars/camaro">Camaro</a></li>
+                                            <li><a href="/cars/chevelle">Chevelle</a></li>
+                                            <li><a href="/cars/corvette">Corvette</a></li>
+                                            <li><a href="/cars/mustang">Mustang</a></li>
+                                        </ul>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        </div>
+        </nav>
+
+        <div id="article-container">
+
+            <nav id="nav-secondary">
+                <h3>On this page</h3>
+            </nav>
+
+            <article>
+                <!-- 
+                Render you main body content here.
+
+                Any `h1`, `h2` or `h3` headings with an `id` attribute
+                will be automatically included in the "On this page"
+                side bar.  By default the text used will be the same
+                as the heading text, but you can change this with an
+                data-nav-secondary-text attribute.
+
+                These headings will also automatically get an anchor
+                link icon that appears when the user hovers over the heading.
+                -->
+                {{{body}}}
+            </article>
+
+        </div>
+    </div>
+
+    <footer>
+        <!-- Text/links on RHS of footer -->
+        <div class="rhs">DocBrowser</div>
+
+        <!-- Text/links on LHS of footer -->
+        <a href="http://www.toptensoftware.com">Topten Software</a>
+    </footer>
+</body>
+</html>
