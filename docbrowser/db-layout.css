@@ -410,6 +410,29 @@ a#show-nav-button:hover
     }
 }
 
+/*
+.primary-nav-shown
+{
+}
+
+.secondary-nav-shown
+{
+}
+*/
+
+.primary-nav-hidden,
+.secondary-nav-hidden,
+body.nonav .primary-nav-shown,
+body.nonav .primary-nav-enabled,
+body:not(.nonav) .primary-nav-disabled
+{
+    display:none;
+}
+
+body.nonav .primary-nav-hidden
+{
+    display:block;
+}
 
 /* Responsive shrink 1 - remove the secondary nav */
 /* Calculate as (min-article-width + content-padding * 3 + secondary-nav-width) * 4 / 3 + 20; */
@@ -424,6 +447,18 @@ a#show-nav-button:hover
     {
         margin-right:0;
     }
+
+    body:not(.nonav) .secondary-nav-hidden
+    {
+        display:block;
+    }
+
+    body:not(.nonav) .secondary-nav-shown
+    {
+        display:none;
+    }
+    
+    
 }
 
 /* Responsive shrink 2 - remove the primary nav, and put it in a popup button */
@@ -483,6 +518,17 @@ a#show-nav-button:hover
         width: calc(100% - (var(--footer-inset) * 2));
         margin-left: var(--footer-inset);
     }
+
+    body:not(.nonav) .primary-nav-hidden
+    {
+        display:block;
+    }
+
+    body:not(.nonav) .primary-nav-shown
+    {
+        display:none;
+    }
+    
 }
 
 
@@ -552,9 +598,16 @@ body.nonav a#show-nav-button
         margin-right:0;
     }
 
-    body.nonav #nav-secondary
+    body.nonav #nav-secondary,
+    body.nonav .secondary-nav-shown
     {
         display:none;
     }
+
+    body.nonav .secondary-nav-hidden
+    {
+        display:block;
+    }
+
 }
 
